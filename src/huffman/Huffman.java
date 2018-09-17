@@ -17,73 +17,10 @@ public class Huffman {
 	public Huffman() {
 
 		loadProb();
-		probMap = list_prob.get(Lang.eng.name());
-		probMap = list_prob.get(Lang.fra.name());
-		probMap = list_prob.get(Lang.ger.name());
-//		calcDist();
-//		probMap = calcDistBible(Lang.eng);
-//		probMap = calcDistBible(Lang.ger);
-
-		hufcode = new HashMap<>();
-
-		PriorityQueue<Node> pq = new PriorityQueue<>();
-		for (Entry<Character, Float> e : probMap.entrySet()) {
-			pq.add(new Node(e.getKey(), e.getValue()));
-		}
-
-		while (pq.size() > 1) {
-			Node tmp1 = pq.poll();
-			Node tmp2 = pq.poll();
-			Node tmp = new Node(tmp1, tmp2);
-			pq.add(tmp);
-		}
-
-		Node head = pq.poll();
-
-		head.postorder("");
-
-		for (Entry<Character, String> e : hufcode.entrySet()) {
-			System.out.println(e);
-		}
-
-		float avgLen = 0.0f;
-		for (Entry<Character, Float> e : probMap.entrySet()) {
-			avgLen += e.getValue() * hufcode.get(e.getKey()).length();
-//			System.out.println(e.getKey() + " " + e.getValue() + " " + hufcode.get(e.getKey()).length());
-		}
-//		avgLen /= probMap.size();
-		System.out.println("Average length: " + avgLen);
-
 	}
 
-	public void calcDist() {
-		probMap = new HashMap<>();
-		probMap.put('a', 0.0817f);
-		probMap.put('b', 0.0149f);
-		probMap.put('c', 0.0278f);
-		probMap.put('d', 0.0425f);
-		probMap.put('e', 0.1270f);
-		probMap.put('f', 0.0223f);
-		probMap.put('g', 0.0202f);
-		probMap.put('h', 0.0609f);
-		probMap.put('i', 0.0697f);
-		probMap.put('j', 0.0015f);
-		probMap.put('k', 0.0077f);
-		probMap.put('l', 0.0403f);
-		probMap.put('m', 0.0241f);
-		probMap.put('n', 0.0675f);
-		probMap.put('o', 0.0751f);
-		probMap.put('p', 0.0193f);
-		probMap.put('q', 0.0010f);
-		probMap.put('r', 0.0599f);
-		probMap.put('s', 0.0633f);
-		probMap.put('t', 0.0906f);
-		probMap.put('u', 0.0276f);
-		probMap.put('v', 0.0098f);
-		probMap.put('w', 0.0236f);
-		probMap.put('x', 0.0015f);
-		probMap.put('y', 0.0197f);
-		probMap.put('z', 0.0007f);
+	public void calcDist(Lang lan) {
+		probMap = list_prob.get(lan.name());
 	}
 
 	class Node implements Comparable<Node> {
@@ -224,7 +161,48 @@ public class Huffman {
 
 	}
 
+	public void makeHuffman() {
+		hufcode = new HashMap<>();
+
+		PriorityQueue<Node> pq = new PriorityQueue<>();
+		for (Entry<Character, Float> e : probMap.entrySet()) {
+			pq.add(new Node(e.getKey(), e.getValue()));
+		}
+
+		while (pq.size() > 1) {
+			Node tmp1 = pq.poll();
+			Node tmp2 = pq.poll();
+			Node tmp = new Node(tmp1, tmp2);
+			pq.add(tmp);
+		}
+
+		Node head = pq.poll();
+
+		head.postorder("");
+
+		for (Entry<Character, String> e : hufcode.entrySet()) {
+			System.out.println(e);
+		}
+
+		float avgLen = 0.0f;
+		for (Entry<Character, Float> e : probMap.entrySet()) {
+			avgLen += e.getValue() * hufcode.get(e.getKey()).length();
+//			System.out.println(e.getKey() + " " + e.getValue() + " " + hufcode.get(e.getKey()).length());
+		}
+//		avgLen /= probMap.size();
+		System.out.println("Average length: " + avgLen);
+	}
+
 	public static void main(String[] args) {
-		new Huffman();
+		Huffman hf = new Huffman();
+
+		hf.calcDist(Lang.eng);
+		hf.makeHuffman();
+
+		hf.calcDist(Lang.fra);
+//		probMap = calcDistBible(Lang.eng);
+//		probMap = calcDistBible(Lang.ger);
+
+		hf.makeHuffman();
 	}
 }
